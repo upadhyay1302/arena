@@ -31,6 +31,7 @@ type Match struct {
 // Run starts the match — each model gets its own goroutine.
 func (m *Match) Run(ctx context.Context, secretWord string) {
 	m.Status = StatusRunning
+	time.Sleep(30 * time.Second)
 	m.broadcast("match_started", map[string]any{
 		"match_id": m.ID,
 		"game":     m.Game,

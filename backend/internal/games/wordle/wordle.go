@@ -148,3 +148,11 @@ func (g *Game) BuildPrompt(model string) string {
 	sb.WriteString("Respond with ONLY a single 5-letter word in ALL CAPS. Nothing else.")
 	return sb.String()
 }
+
+// MarkDone marks a model as done without a win — used when LLM errors out.
+func (g *Game) MarkDone(model string) {
+p := g.state.Players[model]
+p.Done = true
+g.state.Players[model] = p
+g.checkGameOver()
+}
