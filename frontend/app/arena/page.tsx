@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 
@@ -16,8 +16,12 @@ const AVAILABLE_MODELS = [
 
 const WORDS = ["CRANE", "PLANT", "BRAIN", "CLOUD", "FLAME", "FROST", "GLOBE", "LIGHT", "MUSIC", "STONE"]
 
-export default function ArenaPage() {
+import { Suspense } from "react"
+
+function ArenaContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const gameParam = searchParams.get("game") ?? "wordle"
   const [model1, setModel1] = useState(AVAILABLE_MODELS[0].id)
   const [model2, setModel2] = useState(AVAILABLE_MODELS[1].id)
   const [word, setWord] = useState("")
@@ -122,5 +126,13 @@ export default function ArenaPage() {
         </Card>
       </div>
     </div>
+  )
+}
+
+export default function ArenaPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-950" />}>
+      <ArenaContent />
+    </Suspense>
   )
 }
