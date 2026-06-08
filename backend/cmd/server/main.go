@@ -85,6 +85,7 @@ go func() {
 m.Run(context.Background(), body.SecretWord)
 // Record ELO after match finishes
 if len(body.Models) >= 2 {
+log.Printf("recording result: %s vs %s, winner: %q", body.Models[0], body.Models[1], m.Winner)
 eloStore.RecordResult(body.Models[0], body.Models[1], m.Winner)
 }
 }()
