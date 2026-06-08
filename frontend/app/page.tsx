@@ -112,6 +112,7 @@ export default function Home() {
         </span>
         <div className="flex items-center gap-6 text-sm text-slate-400">
           <a href="https://github.com/upadhyay1302/arena" target="_blank" className="hover:text-white transition-colors">GitHub ↗</a>
+          <Link href="/leaderboard" className="hover:text-white transition-colors">Leaderboard</Link>
           <Link href="/arena" className="bg-white text-slate-950 px-4 py-1.5 rounded text-sm font-semibold hover:bg-slate-200 transition-colors">
             Launch →
           </Link>
