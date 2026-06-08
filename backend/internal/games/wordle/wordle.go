@@ -155,4 +155,13 @@ p := g.state.Players[model]
 p.Done = true
 g.state.Players[model] = p
 g.checkGameOver()
+// If all others are done and one won, make sure winner is set
+if g.state.GameOver && g.state.Winner == "" {
+for m, player := range g.state.Players {
+if player.Won {
+g.state.Winner = m
+break
+}
+}
+}
 }
