@@ -6,7 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/upadhyay1302/arena/internal/games/wordle"
+	"github.com/upadhyay1302/arena/internal/games/connect4"
+"github.com/upadhyay1302/arena/internal/games/wordle"
 	"github.com/upadhyay1302/arena/internal/llm"
 	"github.com/upadhyay1302/arena/internal/ws"
 )
