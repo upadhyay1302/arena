@@ -158,3 +158,83 @@ func isAlpha(s string) bool {
 func (m *Match) SetHub(h *ws.Hub) {
 	m.hub = h
 }
+
+func (m *Match) runConnect4(ctx context.Context) {
+if len(m.Models) < 2 {
+return
+}
+game := connect4.New(m.Models[0], m.Models[1])
+
+// Build LLM clients
+clients := make(map[string]*llm.Client)
+for _, model := range m.Models {
+c, err := llm.New(model)
+if err != nil {
+m.broadcast("error", map[string]any{"message": err.Error()})
+return
+}
+clients[model] = c
+}
+
+m.broadcast("state", game.GetState())
+
+// Turn-based loop — Connect 4 is sequential not concurrent
+for !game.IsOver() {
+current := game.CurrentTurn()
+client := clients[current]
+
+prompt := game.BuildPrompt(current)
+raw, err := client.Complete(ctx, "You are playing Connect 4. Reply with ONLY a single digit 0-6 for the column. Nothing else.", prompt)
+if err != nil {
+m.broadcast("error", map[string]any{"model": current, "message": err.Error()})
+break
+}
+
+// Parse column from response
+col := extractCol(raw)
+if col == -1 {
+// Invalid response — try next turn anyway with col 0 fallback
+col = 0
+}
+
+row, err := game.DropPiece(current, col)
+if err != nil {
+// Try each column until one works
+placed := false
+for c := 0; c < 7; c++ {
+row, err = game.DropPiece(current, c)
+if err == nil {
+col = c
+placed = true
+break
+}
+}
+if !placed {
+break
+}
+}
+
+m.broadcast("move", map[string]any{
+"model": current,
+"col":   col,
+"row":   row,
+})
+m.broadcast("state", game.GetState())
+
+time.Sleep(600 * time.Millisecond)
+}
+
+finalState := game.GetState()
+m.Winner = finalState.Winner
+m.broadcast("state", finalState)
+}
+
+// extractCol pulls the first digit 0-6 from an LLM response.
+func extractCol(raw string) int {
+for _, ch := range raw {
+if ch >= '0' && ch <= '6' {
+return int(ch - '0')
+}
+}
+return -1
+}
