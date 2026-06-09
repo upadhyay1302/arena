@@ -5,6 +5,11 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 
+const AVAILABLE_GAMES = [
+  { id: "wordle", label: "Wordle", icon: "⬛" },
+  { id: "connect4", label: "Connect 4", icon: "🔴" },
+]
+
 const AVAILABLE_MODELS = [
   { id: "llama-3.3-70b-versatile", label: "Llama 3.3 70B", provider: "Groq" },
   { id: "qwen/qwen3-32b", label: "Qwen 3 32B", provider: "Groq" },
@@ -66,6 +71,21 @@ function ArenaContent() {
         </div>
 
         <Card className="bg-slate-900 border-slate-800 p-6 flex flex-col gap-6">
+          {/* Game selector */}
+          <div className="flex flex-col gap-2">
+            <label className="text-xs text-slate-400 uppercase tracking-widest">Game</label>
+            <div className="flex gap-2">
+              {AVAILABLE_GAMES.map(g => (
+                <button
+                  key={g.id}
+                  onClick={() => setSelectedGame(g.id)}
+                  className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md border text-sm font-semibold transition-all ${selectedGame === g.id ? "border-white bg-white text-slate-950" : "border-slate-700 text-slate-400 hover:border-slate-500"}`}
+                >
+                  {g.icon} {g.label}
+                </button>
+              ))}
+            </div>
+          </div>
           {/* Model 1 */}
           <div className="flex flex-col gap-2">
             <label className="text-xs text-slate-400 uppercase tracking-widest">Model 1</label>
