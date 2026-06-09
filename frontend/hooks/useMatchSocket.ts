@@ -5,6 +5,7 @@ import { GuessRow } from "@/components/wordle/WordleBoard"
 
 export interface PlayerState {
   guesses: GuessRow[]
+  moves?: { col: number; row: number }[]
   won: boolean
   done: boolean
 }
