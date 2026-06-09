@@ -20,6 +20,7 @@ export type MatchEvent =
   | { type: "match_started"; payload: { match_id: string; game: string; models: string[] } }
   | { type: "state"; payload: MatchState }
   | { type: "guess"; payload: { model: string; word: string; tiles: { letter: string; color: "green" | "yellow" | "gray" }[] } }
+  | { type: "move"; payload: { model: string; col: number; row: number } }
   | { type: "match_finished"; payload: { match_id: string; winner: string } }
   | { type: "error"; payload: { message: string; model?: string } }
 
