@@ -22,6 +22,7 @@ function ArenaContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const gameParam = searchParams.get("game") ?? "wordle"
+  const [selectedGame, setSelectedGame] = useState(gameParam)
   const [model1, setModel1] = useState(AVAILABLE_MODELS[0].id)
   const [model2, setModel2] = useState(AVAILABLE_MODELS[1].id)
   const [word, setWord] = useState("")
@@ -43,7 +44,7 @@ function ArenaContent() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          game: "wordle",
+          game: selectedGame,
           models: [model1, model2],
           secret_word: secretWord,
         }),
