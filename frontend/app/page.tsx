@@ -187,7 +187,7 @@ export default function Home() {
           {GAMES.map((game) => (
             <Link
               key={game.name}
-              href={`/arena?game=${game.name.toLowerCase().replace(/ /g, "-")}`}
+              href={`/arena?game=${game.name.toLowerCase().replace(/ /g, "")}`}
               className="border border-slate-800 rounded-lg p-4 hover:border-slate-500 hover:bg-slate-900 transition-all group cursor-pointer"
             >
               <div className="text-2xl mb-2">{game.icon}</div>

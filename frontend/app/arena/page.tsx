@@ -26,7 +26,7 @@ import { Suspense } from "react"
 function ArenaContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const gameParam = searchParams.get("game") ?? "wordle"
+  const gameParam = (searchParams.get("game") ?? "wordle").replace(/-/g, "")
   const [selectedGame, setSelectedGame] = useState(gameParam)
   const [model1, setModel1] = useState(AVAILABLE_MODELS[0].id)
   const [model2, setModel2] = useState(AVAILABLE_MODELS[1].id)

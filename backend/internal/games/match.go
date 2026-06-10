@@ -38,6 +38,7 @@ func (m *Match) Run(ctx context.Context, secretWord string) {
 		"models":   m.Models,
 	})
 
+	time.Sleep(8 * time.Second)
 	switch m.Game {
 	case "wordle":
 		m.runWordle(ctx, secretWord)
