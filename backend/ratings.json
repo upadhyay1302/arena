@@ -1,18 +1,26 @@
 {
+  "gpt-4o": {
+    "model": "gpt-4o",
+    "rating": 1000.2455823225063,
+    "wins": 0,
+    "losses": 0,
+    "draws": 1,
+    "games": 1
+  },
   "llama-3.3-70b-versatile": {
     "model": "llama-3.3-70b-versatile",
-    "rating": 1011.7471336336108,
+    "rating": 994.6668287863961,
     "wins": 2,
-    "losses": 1,
+    "losses": 2,
     "draws": 5,
-    "games": 8
+    "games": 9
   },
   "qwen/qwen3-32b": {
     "model": "qwen/qwen3-32b",
-    "rating": 988.2528663663891,
-    "wins": 1,
+    "rating": 1005.0875888910975,
+    "wins": 2,
     "losses": 2,
-    "draws": 5,
-    "games": 8
+    "draws": 6,
+    "games": 10
   }
 }
