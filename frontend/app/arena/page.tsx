@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+import { Suspense } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 
@@ -21,13 +22,13 @@ const AVAILABLE_MODELS = [
 
 const WORDS = ["CRANE", "PLANT", "BRAIN", "CLOUD", "FLAME", "FROST", "GLOBE", "LIGHT", "MUSIC", "STONE"]
 
-import { Suspense } from "react"
-
 function ArenaContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
-  const gameParam = (searchParams.get("game") ?? "wordle").replace(/-/g, "")
-  const [selectedGame, setSelectedGame] = useState(gameParam)
+  const gameParam = (searchParams.get("game") ?? "").replace(/-/g, "")
+  const gamePreselected = !!gameParam
+
+  const [selectedGame, setSelectedGame] = useState(gameParam || "wordle")
   const [model1, setModel1] = useState(AVAILABLE_MODELS[0].id)
   const [model2, setModel2] = useState(AVAILABLE_MODELS[1].id)
   const [word, setWord] = useState("")
@@ -37,11 +38,15 @@ function ArenaContent() {
   const randomWord = () => WORDS[Math.floor(Math.random() * WORDS.length)]
 
   const startMatch = async () => {
-    const secretWord = word.trim().toUpperCase() || randomWord()
-    if (secretWord.length !== 5) {
+    const secretWord = selectedGame === "wordle"
+      ? (word.trim().toUpperCase() || randomWord())
+      : ""
+
+    if (selectedGame === "wordle" && secretWord.length !== 5) {
       setError("Word must be 5 letters")
       return
     }
+
     setLoading(true)
     setError("")
     try {
@@ -62,6 +67,8 @@ function ArenaContent() {
     }
   }
 
+  const selectedGameInfo = AVAILABLE_GAMES.find(g => g.id === selectedGame)
+
   return (
     <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center px-4">
       <div className="w-full max-w-lg flex flex-col gap-8">
@@ -71,21 +78,36 @@ function ArenaContent() {
         </div>
 
         <Card className="bg-slate-900 border-slate-800 p-6 flex flex-col gap-6">
-          {/* Game selector */}
-          <div className="flex flex-col gap-2">
-            <label className="text-xs text-slate-400 uppercase tracking-widest">Game</label>
-            <div className="flex gap-2">
-              {AVAILABLE_GAMES.map(g => (
-                <button
-                  key={g.id}
-                  onClick={() => setSelectedGame(g.id)}
-                  className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md border text-sm font-semibold transition-all ${selectedGame === g.id ? "border-white bg-white text-slate-950" : "border-slate-700 text-slate-400 hover:border-slate-500"}`}
-                >
-                  {g.icon} {g.label}
-                </button>
-              ))}
+
+          {/* Game selector — show when coming directly to /arena */}
+          {!gamePreselected && (
+            <div className="flex flex-col gap-2">
+              <label className="text-xs text-slate-400 uppercase tracking-widest">Game</label>
+              <div className="flex gap-2">
+                {AVAILABLE_GAMES.map(g => (
+                  <button
+                    key={g.id}
+                    onClick={() => setSelectedGame(g.id)}
+                    className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md border text-sm font-semibold transition-all ${selectedGame === g.id ? "border-white bg-white text-slate-950" : "border-slate-700 text-slate-400 hover:border-slate-500"}`}
+                  >
+                    {g.icon} {g.label}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Show selected game label when preselected from landing page */}
+          {gamePreselected && (
+            <div className="flex items-center gap-3 pb-2 border-b border-slate-800">
+              <span className="text-2xl">{selectedGameInfo?.icon}</span>
+              <div>
+                <div className="text-white font-semibold">{selectedGameInfo?.label}</div>
+                <div className="text-xs text-slate-500">Select your models and start</div>
+              </div>
+            </div>
+          )}
+
           {/* Model 1 */}
           <div className="flex flex-col gap-2">
             <label className="text-xs text-slate-400 uppercase tracking-widest">Model 1</label>
@@ -121,19 +143,21 @@ function ArenaContent() {
             </select>
           </div>
 
-          {/* Secret word */}
-          <div className="flex flex-col gap-2">
-            <label className="text-xs text-slate-400 uppercase tracking-widest">
-              Secret Word <span className="normal-case text-slate-600">(leave blank for random)</span>
-            </label>
-            <input
-              value={word}
-              onChange={e => setWord(e.target.value.toUpperCase())}
-              maxLength={5}
-              placeholder="e.g. CRANE"
-              className="bg-slate-800 border border-slate-700 rounded-md px-3 py-2 text-sm text-white font-mono tracking-widest placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-slate-500"
-            />
-          </div>
+          {/* Secret word — only for Wordle */}
+          {selectedGame === "wordle" && (
+            <div className="flex flex-col gap-2">
+              <label className="text-xs text-slate-400 uppercase tracking-widest">
+                Secret Word <span className="normal-case text-slate-600">(leave blank for random)</span>
+              </label>
+              <input
+                value={word}
+                onChange={e => setWord(e.target.value.toUpperCase())}
+                maxLength={5}
+                placeholder="e.g. CRANE"
+                className="bg-slate-800 border border-slate-700 rounded-md px-3 py-2 text-sm text-white font-mono tracking-widest placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-slate-500"
+              />
+            </div>
+          )}
 
           {error && <p className="text-red-400 text-xs">{error}</p>}
 
