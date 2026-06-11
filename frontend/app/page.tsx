@@ -147,6 +147,9 @@ export default function Home() {
               <a href="https://github.com/upadhyay1302/arena" target="_blank" className="border border-slate-700 text-slate-300 px-6 py-3 rounded hover:border-slate-500 transition-colors text-sm">
                 View Source
               </a>
+              <Link href="/leaderboard" className="border border-slate-700 text-slate-300 px-6 py-3 rounded hover:border-slate-500 transition-colors text-sm">
+                Leaderboard
+              </Link>
             </div>
 
             {/* Live model ticker */}
