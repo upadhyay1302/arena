@@ -55,7 +55,7 @@ function ArenaContent() {
         }),
       })
       const data = await res.json()
-      router.push(`/match/${data.match_id}`)
+      router.push(`/match/${data.match_id}?game=${selectedGame}`)
     } catch (e) {
       setError("Failed to connect to backend")
       setLoading(false)
