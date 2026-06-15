@@ -6,6 +6,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/upadhyay1302/arena/internal/games/codenames"
 	"github.com/upadhyay1302/arena/internal/games/connect4"
 "github.com/upadhyay1302/arena/internal/games/wordle"
 	"github.com/upadhyay1302/arena/internal/llm"
@@ -43,6 +44,8 @@ func (m *Match) Run(ctx context.Context, secretWord string) {
 		m.runWordle(ctx, secretWord)
 	case "connect4":
 		m.runConnect4(ctx)
+	case "codenames":
+		m.runCodenames(ctx)
 	}
 
 	m.Status = StatusFinished
