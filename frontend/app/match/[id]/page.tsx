@@ -1,6 +1,7 @@
 "use client"
 
 import { use, useState } from "react"
+import Link from "next/link"
 import { useMatchSocket } from "@/hooks/useMatchSocket"
 import { WordleBoard } from "@/components/wordle/WordleBoard"
 import { Connect4Board, C4Cell } from "@/components/connect4/Connect4Board"
@@ -62,7 +63,7 @@ export default function MatchPage({ params }: { params: Promise<{ id: string }> 
       {/* Header */}
       <div className="border-b border-slate-800 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <span className="text-xl font-bold tracking-tight">Arena</span>
+          <Link href="/" className="text-xl font-bold tracking-tight hover:text-slate-300 transition-colors">Arena</Link>
           <span className="text-slate-500 text-sm capitalize">{game}</span>
         </div>
         <div className="flex items-center gap-2">
