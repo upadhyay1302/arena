@@ -244,3 +244,128 @@ return int(ch - '0')
 }
 return -1
 }
+
+func (m *Match) runCodenames(ctx context.Context) {
+if len(m.Models) < 2 {
+return
+}
+game := codenames.New(m.Models[0], m.Models[1])
+
+clients := make(map[string]*llm.Client)
+for _, model := range m.Models {
+c, err := llm.New(model)
+if err != nil {
+m.broadcast("error", map[string]any{"message": err.Error()})
+return
+}
+clients[model] = c
+}
+
+// Broadcast full board to spymaster, hidden to guesser
+m.broadcast("state", game.GetState(m.Models[0]))
+time.Sleep(500 * time.Millisecond)
+
+maxTurns := 50
+for !game.IsOver() && maxTurns > 0 {
+maxTurns--
+current := game.CurrentTurn()
+client := clients[current]
+
+if game.Phase() == "clue" {
+// Spymaster gives clue
+prompt := game.BuildCluePrompt(current)
+raw, err := client.Complete(ctx,
+"You are the Spymaster in Codenames. Follow the format exactly: CLUE: <word> <number>",
+prompt)
+if err != nil {
+m.broadcast("error", map[string]any{"model": current, "message": err.Error()})
+break
+}
+
+word, number := parseClue(raw)
+if word == "" {
+word = "THING"
+number = 1
+}
+
+if err := game.GiveClue(current, word, number); err != nil {
+break
+}
+
+m.broadcast("clue", map[string]any{
+"model":  current,
+"word":   word,
+"number": number,
+})
+m.broadcast("state", game.GetState(current))
+time.Sleep(800 * time.Millisecond)
+
+} else {
+// Guesser picks a word
+prompt := game.BuildGuessPrompt(current)
+raw, err := client.Complete(ctx,
+"You are the Guesser in Codenames. Reply with ONLY one word from the board.",
+prompt)
+if err != nil {
+m.broadcast("error", map[string]any{"model": current, "message": err.Error()})
+break
+}
+
+guessWord := extractWord(raw)
+if guessWord == "" {
+guessWord = extractAnyWord(raw)
+}
+
+cardType, err := game.GuessWord(current, guessWord)
+if err != nil {
+// Skip bad guess
+continue
+}
+
+m.broadcast("guess", map[string]any{
+"model":     current,
+"word":      guessWord,
+"card_type": cardType,
+})
+m.broadcast("state", game.GetState(current))
+time.Sleep(600 * time.Millisecond)
+}
+}
+
+finalState := game.GetState("")
+m.Winner = finalState.Winner
+m.broadcast("state", finalState)
+}
+
+// parseClue extracts word and number from "CLUE: OCEAN 3"
+func parseClue(raw string) (string, int) {
+raw = strings.ToUpper(strings.TrimSpace(raw))
+// Find "CLUE:" prefix
+idx := strings.Index(raw, "CLUE:")
+if idx >= 0 {
+raw = strings.TrimSpace(raw[idx+5:])
+}
+parts := strings.Fields(raw)
+if len(parts) < 2 {
+return "", 0
+}
+word := parts[0]
+number := 0
+fmt.Sscanf(parts[1], "%d", &number)
+if number < 1 {
+number = 1
+}
+if number > 9 {
+number = 9
+}
+return word, number
+}
+
+// extractAnyWord gets the first word from a response
+func extractAnyWord(raw string) string {
+parts := strings.Fields(strings.ToUpper(raw))
+if len(parts) > 0 {
+return strings.Trim(parts[0], `"'.,!?`)
+}
+return ""
+}
