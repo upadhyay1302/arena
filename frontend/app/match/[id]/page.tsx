@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useMatchSocket } from "@/hooks/useMatchSocket"
 import { WordleBoard } from "@/components/wordle/WordleBoard"
 import { Connect4Board, C4Cell } from "@/components/connect4/Connect4Board"
+import { CodenamesBoard, Card } from "@/components/codenames/CodenamesBoard"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
 
@@ -37,6 +38,10 @@ export default function MatchPage({ params }: { params: Promise<{ id: string }> 
   const [board, setBoard] = useState<C4Cell[][]>(EMPTY_BOARD)
   const [lastMove, setLastMove] = useState<{ row: number; col: number } | undefined>()
   const [currentTurn, setCurrentTurn] = useState<string>("")
+  const [cnCards, setCnCards] = useState<Card[]>([])
+  const [cnPhase, setCnPhase] = useState<string>("")
+  const [currentClue, setCurrentClue] = useState<{ word: string; number: number } | undefined>()
+  const [lastGuessWord, setLastGuessWord] = useState<string | undefined>()
 
   const { connected, state } = useMatchSocket({
     matchId: id,
@@ -52,6 +57,19 @@ export default function MatchPage({ params }: { params: Promise<{ id: string }> 
       }
       if (event.type === "move") {
         setLastMove({ row: event.payload.row, col: event.payload.col })
+      }
+      if (event.type === "state" && "cards" in event.payload) {
+        const s = event.payload as any
+        setCnCards(s.cards ?? [])
+        setCurrentTurn(s.current_turn ?? "")
+        setCnPhase(s.phase ?? "")
+        setCurrentClue(s.current_clue)
+      }
+      if (event.type === "clue") {
+        setCurrentClue({ word: (event.payload as any).word, number: (event.payload as any).number })
+      }
+      if (event.type === "guess" && "card_type" in event.payload) {
+        setLastGuessWord((event.payload as any).word)
       }
     },
   })
