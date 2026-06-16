@@ -312,10 +312,8 @@ m.broadcast("error", map[string]any{"model": current, "message": err.Error()})
 break
 }
 
-guessWord := extractWord(raw)
-if guessWord == "" {
-guessWord = extractAnyWord(raw)
-}
+cleaned := stripThinking(raw)
+guessWord := extractAnyWord(cleaned)
 
 cardType, err := game.GuessWord(current, guessWord)
 if err != nil {
