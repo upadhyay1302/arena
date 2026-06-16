@@ -151,6 +151,48 @@ export default function MatchPage({ params }: { params: Promise<{ id: string }> 
         </div>
       )}
 
+      {/* Codenames — shared board with clue display */}
+      {game === "codenames" && (
+        <div className="flex flex-col items-center gap-6 px-8 py-12">
+          <div className="flex items-center gap-8">
+            {playerList.map((model, i) => (
+              <div key={model} className={cn(
+                "flex items-center gap-2 px-4 py-2 rounded-full border transition-all",
+                currentTurn === model ? "border-white bg-slate-800" : "border-slate-700 opacity-50"
+              )}>
+                <div className={cn("w-3 h-3 rounded-full", i === 0 ? "bg-sky-500" : "bg-red-500")} />
+                <span className={cn("text-sm font-semibold", modelColor(model))}>{modelLabel(model)}</span>
+                {currentTurn === model && !state.game_over && (
+                  <span className="text-xs text-slate-400">{cnPhase === "clue" ? "thinking of a clue..." : "guessing..."}</span>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {currentClue && !state.game_over && (
+            <div className="bg-slate-800 border border-slate-700 rounded-lg px-6 py-3 text-center">
+              <span className="text-xs text-slate-500 uppercase tracking-widest">Current Clue</span>
+              <div className="text-xl font-bold mt-1">
+                {currentClue.word} <span className="text-slate-400">— {currentClue.number}</span>
+              </div>
+            </div>
+          )}
+
+          <CodenamesBoard cards={cnCards} lastGuess={lastGuessWord} />
+
+          <div className="flex gap-6 text-xs text-slate-500">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-sky-500" />
+              <span>Blue team: {playerList[0] && modelLabel(playerList[0])}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-red-500" />
+              <span>Red team: {playerList[1] && modelLabel(playerList[1])}</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Wordle — two boards side by side */}
       {game === "wordle" && (
         <div className="flex items-start justify-center gap-16 px-8 py-12">
