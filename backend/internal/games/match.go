@@ -338,11 +338,39 @@ m.Winner = finalState.Winner
 m.broadcast("state", finalState)
 }
 
+// stripThinking removes <think>...</think> reasoning blocks some models emit
+func stripThinking(raw string) string {
+for {
+start := strings.Index(raw, "<think>")
+if start == -1 {
+start = strings.Index(raw, "<THINK>")
+}
+if start == -1 {
+break
+}
+end := strings.Index(raw[start:], "</think>")
+endUpper := strings.Index(raw[start:], "</THINK>")
+if end == -1 && endUpper == -1 {
+// unterminated thinking block — drop everything before and including this tag
+raw = raw[start+7:]
+continue
+}
+closeLen := 8 // len("</think>")
+closeIdx := end
+if closeIdx == -1 {
+closeIdx = endUpper
+}
+raw = raw[:start] + raw[start+closeIdx+closeLen:]
+}
+return strings.TrimSpace(raw)
+}
+
 // parseClue extracts word and number from "CLUE: OCEAN 3"
 func parseClue(raw string) (string, int) {
+raw = stripThinking(raw)
 raw = strings.ToUpper(strings.TrimSpace(raw))
-// Find "CLUE:" prefix
-idx := strings.Index(raw, "CLUE:")
+// Find "CLUE:" prefix — search from the end in case reasoning text also contains "CLUE"
+idx := strings.LastIndex(raw, "CLUE:")
 if idx >= 0 {
 raw = strings.TrimSpace(raw[idx+5:])
 }
@@ -350,7 +378,7 @@ parts := strings.Fields(raw)
 if len(parts) < 2 {
 return "", 0
 }
-word := parts[0]
+word := strings.Trim(parts[0], `"'.,!?<>`)
 number := 0
 fmt.Sscanf(parts[1], "%d", &number)
 if number < 1 {
@@ -359,7 +387,22 @@ number = 1
 if number > 9 {
 number = 9
 }
+if word == "" || !isAlphaWord(word) {
+return "", 0
+}
 return word, number
+}
+
+func isAlphaWord(s string) bool {
+if s == "" {
+return false
+}
+for _, r := range s {
+if (r < 'A' || r > 'Z') {
+return false
+}
+}
+return true
 }
 
 // extractAnyWord gets the first word from a response
