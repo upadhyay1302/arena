@@ -43,7 +43,7 @@ wantNumber: 0,
 name:       "clue word with punctuation",
 raw:        "CLUE: OCEAN, 3",
 wantWord:   "OCEAN",
-wantNumber: 0, // "3" with comma might fail Sscanf — test reveals this
+wantNumber: 3,
 },
 }
 
