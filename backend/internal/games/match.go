@@ -336,54 +336,53 @@ m.Winner = finalState.Winner
 m.broadcast("state", finalState)
 }
 
-// stripThinking removes <think>...</think> reasoning blocks some models emit
+// stripThinking removes <think>...</think> reasoning blocks some models emit.
+// If a thinking block is left unterminated, the entire remainder is reasoning
+// with no real answer, so we discard it rather than guessing what's content.
 func stripThinking(raw string) string {
 for {
-start := strings.Index(raw, "<think>")
-if start == -1 {
-start = strings.Index(raw, "<THINK>")
-}
+lower := strings.ToLower(raw)
+start := strings.Index(lower, "<think>")
 if start == -1 {
 break
 }
-end := strings.Index(raw[start:], "</think>")
-endUpper := strings.Index(raw[start:], "</THINK>")
-if end == -1 && endUpper == -1 {
-// unterminated thinking block — drop everything before and including this tag
-raw = raw[start+7:]
-continue
+end := strings.Index(lower[start:], "</think>")
+if end == -1 {
+// unterminated — no real answer follows, discard everything
+return strings.TrimSpace(raw[:start])
 }
-closeLen := 8 // len("</think>")
-closeIdx := end
-if closeIdx == -1 {
-closeIdx = endUpper
-}
-raw = raw[:start] + raw[start+closeIdx+closeLen:]
+closeLen := len("</think>")
+raw = raw[:start] + raw[start+end+closeLen:]
 }
 return strings.TrimSpace(raw)
 }
 
-// parseClue extracts word and number from "CLUE: OCEAN 3"
+// parseClue extracts word and number from "CLUE: OCEAN 3".
+// Requires an explicit "CLUE:" marker — without it, we cannot reliably
+// distinguish the actual clue from filler text the model may have emitted.
 func parseClue(raw string) (string, int) {
 raw = stripThinking(raw)
-raw = strings.ToUpper(strings.TrimSpace(raw))
-// Find "CLUE:" prefix — search from the end in case reasoning text also contains "CLUE"
-idx := strings.LastIndex(raw, "CLUE:")
-if idx >= 0 {
-raw = strings.TrimSpace(raw[idx+5:])
+upper := strings.ToUpper(strings.TrimSpace(raw))
+
+idx := strings.LastIndex(upper, "CLUE:")
+if idx < 0 {
+return "", 0
 }
-parts := strings.Fields(raw)
+rest := strings.TrimSpace(upper[idx+5:])
+
+parts := strings.Fields(rest)
 if len(parts) < 2 {
 return "", 0
 }
-word := strings.Trim(parts[0], `"'.,!?<>`)
+word := strings.Trim(parts[0], `"'.,!?<>:;`)
+numberStr := strings.Trim(parts[1], `"'.,!?<>:;`)
+
 number := 0
-fmt.Sscanf(parts[1], "%d", &number)
-if number < 1 {
-number = 1
+if _, err := fmt.Sscanf(numberStr, "%d", &number); err != nil {
+return "", 0
 }
-if number > 9 {
-number = 9
+if number < 1 || number > 9 {
+return "", 0
 }
 if word == "" || !isAlphaWord(word) {
 return "", 0
