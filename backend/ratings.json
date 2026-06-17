@@ -9,26 +9,26 @@
   },
   "llama-3.1-8b-instant": {
     "model": "llama-3.1-8b-instant",
-    "rating": 1027.7654709332817,
-    "wins": 2,
+    "rating": 1040.3180506885474,
+    "wins": 3,
     "losses": 0,
     "draws": 0,
-    "games": 2
+    "games": 3
   },
   "llama-3.3-70b-versatile": {
     "model": "llama-3.3-70b-versatile",
-    "rating": 951.7138670684969,
+    "rating": 942.8302960100962,
     "wins": 2,
-    "losses": 6,
-    "draws": 9,
-    "games": 17
+    "losses": 7,
+    "draws": 10,
+    "games": 19
   },
   "qwen/qwen3-32b": {
     "model": "qwen/qwen3-32b",
-    "rating": 1020.275079675715,
+    "rating": 1016.6060709788501,
     "wins": 4,
     "losses": 2,
-    "draws": 10,
-    "games": 16
+    "draws": 11,
+    "games": 17
   }
 }
