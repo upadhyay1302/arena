@@ -273,20 +273,30 @@ current := game.CurrentTurn()
 client := clients[current]
 
 if game.Phase() == "clue" {
-// Spymaster gives clue
+// Spymaster gives clue — retry a few times if the model
+// doesn't follow the required format, rather than injecting
+// a meaningless placeholder clue.
 prompt := game.BuildCluePrompt(current)
-raw, err := client.Complete(ctx,
-"You are the Spymaster in Codenames. Follow the format exactly: CLUE: <word> <number>",
-prompt)
+word, number := "", 0
+const maxClueAttempts = 3
+for attempt := 0; attempt < maxClueAttempts; attempt++ {
+sys := "You are the Spymaster in Codenames. Follow the format exactly: CLUE: <word> <number>"
+if attempt > 0 {
+sys += ` Your previous response did not match this format. Respond with ONLY the line "CLUE: <word> <number>" and nothing else.`
+}
+raw, err := client.Complete(ctx, sys, prompt)
 if err != nil {
 m.broadcast("error", map[string]any{"model": current, "message": err.Error()})
 break
 }
-
-word, number := parseClue(raw)
+word, number = parseClue(raw)
+if word != "" {
+break
+}
+}
 if word == "" {
-word = "THING"
-number = 1
+m.broadcast("error", map[string]any{"model": current, "message": "could not parse a valid clue after retries"})
+break
 }
 
 if err := game.GiveClue(current, word, number); err != nil {
