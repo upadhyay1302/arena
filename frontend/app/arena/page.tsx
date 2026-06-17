@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card"
 const AVAILABLE_GAMES = [
   { id: "wordle", label: "Wordle", icon: "⬛" },
   { id: "connect4", label: "Connect 4", icon: "🔴" },
+  { id: "codenames", label: "Codenames", icon: "🔍" },
 ]
 
 const AVAILABLE_MODELS = [
