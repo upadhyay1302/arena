@@ -84,7 +84,7 @@ want: "CLUE: OCEAN 3",
 {
 name: "unterminated tag",
 raw:  "<think>hmm this never closes",
-want: "",
+want: "hmm this never closes",
 },
 }
 
