@@ -9,19 +9,19 @@
   },
   "llama-3.1-8b-instant": {
     "model": "llama-3.1-8b-instant",
-    "rating": 1040.3180506885474,
+    "rating": 1035.9427996259788,
     "wins": 3,
     "losses": 0,
-    "draws": 0,
-    "games": 3
+    "draws": 1,
+    "games": 4
   },
   "llama-3.3-70b-versatile": {
     "model": "llama-3.3-70b-versatile",
-    "rating": 942.8302960100962,
+    "rating": 947.2055470726648,
     "wins": 2,
     "losses": 7,
-    "draws": 10,
-    "games": 19
+    "draws": 11,
+    "games": 20
   },
   "qwen/qwen3-32b": {
     "model": "qwen/qwen3-32b",

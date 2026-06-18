@@ -2,6 +2,7 @@ package games
 
 import (
 	"context"
+	"log"
 	"fmt"
 	"strings"
 	"sync"
@@ -343,6 +344,7 @@ time.Sleep(600 * time.Millisecond)
 
 finalState := game.GetState("")
 m.Winner = finalState.Winner
+log.Printf("codenames done: over=%v winner=%q blueLeft=%d redLeft=%d", finalState.GameOver, finalState.Winner, finalState.BlueLeft, finalState.RedLeft)
 m.broadcast("state", finalState)
 }
 
