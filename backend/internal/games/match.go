@@ -291,6 +291,7 @@ m.broadcast("error", map[string]any{"model": current, "message": err.Error()})
 break
 }
 word, number = parseClue(raw)
+log.Printf("clue attempt %d: raw=%q word=%q number=%d", attempt, raw, word, number)
 if word != "" {
 break
 }
