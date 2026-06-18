@@ -350,8 +350,8 @@ m.broadcast("state", finalState)
 }
 
 // stripThinking removes <think>...</think> reasoning blocks some models emit.
-// If a thinking block is left unterminated, the entire remainder is reasoning
-// with no real answer, so we discard it rather than guessing what's content.
+// If the block is unterminated (Qwen3 style), we keep the content inside
+// the thinking block since that's where the actual answer lives.
 func stripThinking(raw string) string {
 for {
 lower := strings.ToLower(raw)
@@ -361,8 +361,10 @@ break
 }
 end := strings.Index(lower[start:], "</think>")
 if end == -1 {
-// unterminated — no real answer follows, discard everything
-return strings.TrimSpace(raw[:start])
+// unterminated — keep the content inside the think block
+// since Qwen3 puts its actual answer inside the thinking
+raw = raw[start+len("<think>"):]
+break
 }
 closeLen := len("</think>")
 raw = raw[:start] + raw[start+end+closeLen:]
