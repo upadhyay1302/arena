@@ -50,12 +50,16 @@ return Groq, "https://api.groq.com/openai/v1/chat/completions", "GROQ_API_KEY"
 }
 }
 
-func (c *Client) Complete(ctx context.Context, system, user string) (string, error) {
+func (c *Client) Complete(ctx context.Context, system, user string, maxTokens ...int) (string, error) {
+	tokens := 50
+	if len(maxTokens) > 0 {
+		tokens = maxTokens[0]
+	}
 switch c.provider {
 case Anthropic:
-return c.anthropicComplete(ctx, system, user)
+return c.anthropicComplete(ctx, system, user, tokens)
 default:
-return c.openaiComplete(ctx, system, user)
+return c.openaiComplete(ctx, system, user, tokens)
 }
 }
 
@@ -79,14 +83,14 @@ Message string `json:"message"`
 } `json:"error"`
 }
 
-func (c *Client) openaiComplete(ctx context.Context, system, user string) (string, error) {
+func (c *Client) openaiComplete(ctx context.Context, system, user string, maxTokens int) (string, error) {
 msgs := []oaiMessage{}
 if system != "" {
 msgs = append(msgs, oaiMessage{Role: "system", Content: system})
 }
 msgs = append(msgs, oaiMessage{Role: "user", Content: user})
 
-body, _ := json.Marshal(oaiRequest{Model: c.Model, Messages: msgs, MaxTokens: 50})
+body, _ := json.Marshal(oaiRequest{Model: c.Model, Messages: msgs, MaxTokens: maxTokens})
 req, err := http.NewRequestWithContext(ctx, "POST", c.baseURL, bytes.NewReader(body))
 if err != nil {
 return "", err
@@ -130,10 +134,10 @@ Message string `json:"message"`
 } `json:"error"`
 }
 
-func (c *Client) anthropicComplete(ctx context.Context, system, user string) (string, error) {
+func (c *Client) anthropicComplete(ctx context.Context, system, user string, maxTokens int) (string, error) {
 reqBody := anthropicRequest{
 Model:     c.Model,
-MaxTokens: 50,
+MaxTokens: maxTokens,
 System:    system,
 Messages:  []oaiMessage{{Role: "user", Content: user}},
 }

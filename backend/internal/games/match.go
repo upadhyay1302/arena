@@ -2,7 +2,6 @@ package games
 
 import (
 	"context"
-	"log"
 	"fmt"
 	"strings"
 	"sync"
@@ -291,7 +290,6 @@ m.broadcast("error", map[string]any{"model": current, "message": err.Error()})
 break
 }
 word, number = parseClue(raw)
-log.Printf("clue attempt %d: raw=%q word=%q number=%d", attempt, raw, word, number)
 if word != "" {
 break
 }
@@ -345,7 +343,6 @@ time.Sleep(600 * time.Millisecond)
 
 finalState := game.GetState("")
 m.Winner = finalState.Winner
-log.Printf("codenames done: over=%v winner=%q blueLeft=%d redLeft=%d", finalState.GameOver, finalState.Winner, finalState.BlueLeft, finalState.RedLeft)
 m.broadcast("state", finalState)
 }
 
