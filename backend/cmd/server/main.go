@@ -53,8 +53,12 @@ mux.HandleFunc("GET /api/match/{id}", handleGetMatch)
 mux.HandleFunc("GET /ws/match/{id}", handleWS)
 mux.HandleFunc("GET /api/leaderboard", handleLeaderboard)
 
-log.Println("Arena backend listening on :8080")
-log.Fatal(http.ListenAndServe(":8080", corsMiddleware(mux)))
+port := os.Getenv("PORT")
+if port == "" {
+port = "8080"
+}
+log.Printf("Arena backend listening on :%s", port)
+log.Fatal(http.ListenAndServe(":"+port, corsMiddleware(mux)))
 }
 
 func handleCreateMatch(w http.ResponseWriter, r *http.Request) {
