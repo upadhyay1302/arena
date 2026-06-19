@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { BACKEND_URL } from "@/lib/config"
 import Link from "next/link"
 
 interface ModelStats {
@@ -50,7 +51,7 @@ export default function LeaderboardPage() {
 
   const fetchBoard = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/leaderboard")
+      const res = await fetch(`${BACKEND_URL}/api/leaderboard`)
       const data = await res.json()
       setBoard(data ?? [])
       setLastUpdated(new Date())

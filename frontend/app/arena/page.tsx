@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Suspense } from "react"
+import { BACKEND_URL } from "@/lib/config"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 
@@ -51,7 +52,7 @@ function ArenaContent() {
     setLoading(true)
     setError("")
     try {
-      const res = await fetch("http://localhost:8080/api/match", {
+      const res = await fetch(`${BACKEND_URL}/api/match`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
