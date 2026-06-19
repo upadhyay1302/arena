@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import { WS_URL } from "@/lib/config"
 import { GuessRow } from "@/components/wordle/WordleBoard"
 
 export interface PlayerState {
@@ -43,7 +44,7 @@ export function useMatchSocket({ matchId, onEvent }: UseMatchSocketOptions) {
   useEffect(() => {
     if (!matchId) return
 
-    const socket = new WebSocket(`ws://localhost:8080/ws/match/${matchId}`)
+    const socket = new WebSocket(`${WS_URL}/ws/match/${matchId}`)
     ws.current = socket
 
     socket.onopen = () => setConnected(true)
