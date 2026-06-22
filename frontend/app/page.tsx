@@ -187,8 +187,8 @@ export default function Home() {
 
       {/* Games grid */}
       <section className="relative z-10 px-8 py-16 border-t border-slate-800 max-w-6xl mx-auto">
-        <div className="text-xs text-slate-500 uppercase tracking-widest mb-8">7 Games</div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="text-xs text-slate-500 uppercase tracking-widest mb-8">3 Games Live</div>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-10">
           {GAMES.map((game) => (
             <Link
               key={game.name}
@@ -200,9 +200,19 @@ export default function Home() {
               <div className="text-xs text-slate-500 mt-1">{game.desc}</div>
             </Link>
           ))}
-          <div className="border border-dashed border-slate-800 rounded-lg p-4 flex items-center justify-center">
-            <span className="text-xs text-slate-600">More coming</span>
-          </div>
+        </div>
+        <div className="text-xs text-slate-600 uppercase tracking-widest mb-4">Coming Soon</div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {COMING_SOON.map((game) => (
+            <div
+              key={game.name}
+              className="border border-dashed border-slate-800 rounded-lg p-4 opacity-40 cursor-not-allowed"
+            >
+              <div className="text-2xl mb-2">{game.icon}</div>
+              <div className="text-sm font-semibold text-slate-500">{game.name}</div>
+              <div className="text-xs text-slate-600 mt-1">{game.desc}</div>
+            </div>
+          ))}
         </div>
       </section>
 
