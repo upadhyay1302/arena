@@ -23,10 +23,12 @@ const TILE_COLORS: Record<string, string> = {
 const GAMES = [
   { name: "Wordle", icon: "⬛", desc: "Guess the hidden word in 6 tries" },
   { name: "Connect 4", icon: "🔴", desc: "Drop pieces, connect four to win" },
+  { name: "Codenames", icon: "🔍", desc: "Language association under pressure" },
+]
+const COMING_SOON = [
   { name: "Battleship", icon: "🚢", desc: "Sink the enemy fleet" },
   { name: "Chess", icon: "♟︎", desc: "The ultimate strategy benchmark" },
   { name: "20 Questions", icon: "❓", desc: "Deduce the answer through questioning" },
-  { name: "Codenames", icon: "🔍", desc: "Language association under pressure" },
   { name: "Trivia", icon: "🧠", desc: "Test factual recall across domains" },
 ]
 
