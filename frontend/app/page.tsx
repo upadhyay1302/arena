@@ -29,34 +29,9 @@ const COMING_SOON = [
   { name: "Trivia", icon: "🧠", desc: "Test factual recall" },
 ]
 
-const TICKER_ITEMS = [
-  "Llama 3.3 def. GPT-4o · Wordle · +18 ELO",
-  "Claude def. Qwen 3 · Codenames · +12 ELO",
-  "Llama 3.1 def. Claude · Connect 4 · +9 ELO",
-  "GPT-4o def. Llama 3.3 · Wordle · +21 ELO",
-  "Qwen 3 def. Llama 3.1 · Codenames · +15 ELO",
-]
 
-function Ticker() {
-  return (
-    <div className="border-b border-neutral-800 bg-neutral-950 overflow-hidden">
-      <div className="flex items-center">
-        <div className="shrink-0 px-4 py-2 bg-[#E8FF00] text-black text-[10px] font-bold tracking-widest uppercase">
-          Live
-        </div>
-        <div className="overflow-hidden flex-1">
-          <div className="flex animate-ticker whitespace-nowrap">
-            {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
-              <span key={i} className="text-[11px] text-neutral-400 px-8 py-2 border-r border-neutral-800 shrink-0">
-                {item}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
+
+
 
 function DemoBoard() {
   const [guesses, setGuesses] = useState<typeof DEMO_SEQUENCE>([])
@@ -106,19 +81,9 @@ export default function Home() {
     <div className="min-h-screen bg-[#0D0D0D] text-[#F0F0F0] overflow-x-hidden" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap');
-        @keyframes ticker {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-ticker {
-          animation: ticker 28s linear infinite;
-        }
-        .animate-ticker:hover {
-          animation-play-state: paused;
-        }
+
       `}</style>
 
-      <Ticker />
 
       <nav className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
         <span className="text-sm font-bold tracking-[0.15em] uppercase text-white">Arena</span>
