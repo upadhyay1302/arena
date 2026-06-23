@@ -1,6 +1,7 @@
 "use client"
 
 import { use, useState } from "react"
+import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { useMatchSocket } from "@/hooks/useMatchSocket"
 import { WordleBoard } from "@/components/wordle/WordleBoard"
@@ -32,9 +33,9 @@ const EMPTY_BOARD: C4Cell[][] = Array.from({ length: 6 }, () => Array(7).fill(0)
 
 export default function MatchPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
-  const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null
+  const searchParams = useSearchParams()
   const [models, setModels] = useState<string[]>([])
-  const [game, setGame] = useState<string>(searchParams?.get("game") ?? "wordle")
+  const [game, setGame] = useState<string>(searchParams.get("game") ?? "wordle")
   const [board, setBoard] = useState<C4Cell[][]>(EMPTY_BOARD)
   const [lastMove, setLastMove] = useState<{ row: number; col: number } | undefined>()
   const [currentTurn, setCurrentTurn] = useState<string>("")
