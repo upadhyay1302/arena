@@ -1,6 +1,6 @@
 "use client"
 
-import { use, useState } from "react"
+import { use, useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { useMatchSocket } from "@/hooks/useMatchSocket"
@@ -31,7 +31,7 @@ function modelColor(model: string) {
 
 const EMPTY_BOARD: C4Cell[][] = Array.from({ length: 6 }, () => Array(7).fill(0) as C4Cell[])
 
-export default function MatchPage({ params }: { params: Promise<{ id: string }> }) {
+function MatchPageInner({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params)
   const searchParams = useSearchParams()
   const [models, setModels] = useState<string[]>([])
@@ -227,5 +227,13 @@ export default function MatchPage({ params }: { params: Promise<{ id: string }> 
         </div>
       )}
     </div>
+  )
+}
+
+export default function MatchPage({ params }: { params: Promise<{ id: string }> }) {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-950" />}>
+      <MatchPageInner params={params} />
+    </Suspense>
   )
 }
