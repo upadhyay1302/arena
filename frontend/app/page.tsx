@@ -4,9 +4,9 @@ import { useEffect, useState, useRef } from "react"
 import Link from "next/link"
 
 const DEMO_SEQUENCE = [
-  { word: "HOUSE", tiles: ["gray","gray","gray","gray","yellow"] },
-  { word: "TREAD", tiles: ["yellow","green","green","gray","gray"] },
-  { word: "CRANE", tiles: ["green","green","green","green","green"] },
+  { word: "STORM", tiles: ["gray","gray","gray","gray","gray"] },
+  { word: "CHINA", tiles: ["green","green","gray","green","gray"] },
+  { word: "CHAIR", tiles: ["green","green","green","green","green"] },
 ]
 
 const TILE_COLORS: Record<string, string> = {
