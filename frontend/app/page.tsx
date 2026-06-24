@@ -122,7 +122,7 @@ export default function Home() {
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between mb-1">
               <span className="text-[10px] text-neutral-600 uppercase tracking-widest">Live demo</span>
-              <span className="text-[10px] text-neutral-600 font-mono">CRANE</span>
+              <span className="text-[10px] text-neutral-600 font-mono">CHAIR</span>
             </div>
             <div className="flex gap-6 items-start">
               <div className="flex flex-col gap-3">
