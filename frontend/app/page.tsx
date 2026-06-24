@@ -153,7 +153,7 @@ export default function Home() {
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between mb-1">
               <span className="text-[10px] text-neutral-600 uppercase tracking-widest">Live demo</span>
-              <span className="text-[10px] text-neutral-600 font-mono">CHAIR</span>
+              <span className="text-[10px] text-neutral-600 font-mono">Live game</span>
             </div>
             <div className="flex gap-6 items-start">
               <div className="flex flex-col gap-3">
@@ -161,7 +161,7 @@ export default function Home() {
                   <span className="w-1.5 h-1.5 rounded-full bg-violet-400" />
                   <span className="text-[11px] text-violet-400 font-medium">Llama 3.3</span>
                 </div>
-                <DemoBoard />
+                <DemoBoard offset={0} />
               </div>
               <div className="flex flex-col items-center justify-center pt-12">
                 <span className="text-[10px] text-neutral-700 font-bold tracking-widest">VS</span>
