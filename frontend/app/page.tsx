@@ -3,11 +3,39 @@
 import { useEffect, useState, useRef } from "react"
 import Link from "next/link"
 
-const DEMO_SEQUENCE = [
-  { word: "STORM", tiles: ["gray","gray","gray","gray","gray"] },
-  { word: "CHINA", tiles: ["green","green","gray","green","gray"] },
-  { word: "CHAIR", tiles: ["green","green","green","green","green"] },
+const DEMO_ROUNDS = [
+  {
+    secret: "CHAIR",
+    guesses: [
+      { word: "STARE", tiles: ["gray","gray","green","gray","yellow"] },
+      { word: "PLAIN", tiles: ["gray","gray","green","gray","yellow"] },
+      { word: "CRIMP", tiles: ["green","gray","green","gray","gray"] },
+      { word: "CHAIN", tiles: ["green","green","green","green","gray"] },
+      { word: "CHAIR", tiles: ["green","green","green","green","green"] },
+    ],
+  },
+  {
+    secret: "FJORD",
+    guesses: [
+      { word: "STALE", tiles: ["gray","gray","gray","gray","gray"] },
+      { word: "CRONY", tiles: ["gray","gray","green","gray","gray"] },
+      { word: "FROWN", tiles: ["green","green","green","gray","gray"] },
+      { word: "FROND", tiles: ["green","green","green","gray","green"] },
+      { word: "FJORD", tiles: ["green","green","green","green","green"] },
+    ],
+  },
+  {
+    secret: "KNACK",
+    guesses: [
+      { word: "STARE", tiles: ["gray","gray","green","gray","gray"] },
+      { word: "BLANK", tiles: ["gray","gray","green","gray","green"] },
+      { word: "CLANK", tiles: ["gray","gray","green","green","green"] },
+      { word: "KNACK", tiles: ["green","green","green","green","green"] },
+    ],
+  },
 ]
+
+const DEMO_SEQUENCE = DEMO_ROUNDS[0].guesses
 
 const TILE_COLORS: Record<string, string> = {
   green:  "bg-emerald-500 border-emerald-500 text-white",
