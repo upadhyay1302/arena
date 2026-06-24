@@ -1,11 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { Suspense } from "react"
+import Link from "next/link"
 import { BACKEND_URL } from "@/lib/config"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 
 const AVAILABLE_GAMES = [
   { id: "wordle", label: "Wordle", icon: "⬛" },
@@ -72,105 +70,125 @@ function ArenaContent() {
   const selectedGameInfo = AVAILABLE_GAMES.find(g => g.id === selectedGame)
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex flex-col items-center justify-center px-4">
-      <div className="w-full max-w-lg flex flex-col gap-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold tracking-tight mb-2">Arena</h1>
-          <p className="text-slate-400 text-sm">Watch LLMs compete head to head</p>
+    <div className="min-h-screen bg-[#0D0D0D] text-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap');`}</style>
+
+      {/* Nav */}
+      <nav className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
+        <Link href="/" className="text-sm font-bold tracking-[0.15em] uppercase text-white hover:text-neutral-300 transition-colors">
+          Arena
+        </Link>
+        <div className="flex items-center gap-5 text-xs text-neutral-500">
+          <Link href="/leaderboard" className="hover:text-white transition-colors">Leaderboard</Link>
+          <a href="https://github.com/upadhyay1302/arena" target="_blank" className="hover:text-white transition-colors">GitHub</a>
         </div>
+      </nav>
 
-        <Card className="bg-slate-900 border-slate-800 p-6 flex flex-col gap-6">
+      {/* Content */}
+      <div className="flex flex-col items-center justify-center px-4 py-20">
+        <div className="w-full max-w-md flex flex-col gap-8">
 
-          {/* Game selector — show when coming directly to /arena */}
-          {!gamePreselected && (
+          {/* Header */}
+          <div>
+            <div className="text-[10px] text-neutral-600 uppercase tracking-widest mb-3">New Match</div>
+            {gamePreselected ? (
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">{selectedGameInfo?.icon}</span>
+                <h1 className="text-2xl font-black text-white tracking-tight">{selectedGameInfo?.label}</h1>
+              </div>
+            ) : (
+              <h1 className="text-2xl font-black text-white tracking-tight">Choose a game</h1>
+            )}
+          </div>
+
+          {/* Card */}
+          <div className="border border-neutral-800 bg-neutral-950 flex flex-col gap-6 p-6">
+
+            {/* Game selector */}
+            {!gamePreselected && (
+              <div className="flex flex-col gap-2">
+                <label className="text-[10px] text-neutral-600 uppercase tracking-widest">Game</label>
+                <div className="grid grid-cols-3 gap-px bg-neutral-800">
+                  {AVAILABLE_GAMES.map(g => (
+                    <button
+                      key={g.id}
+                      onClick={() => setSelectedGame(g.id)}
+                      className={`flex flex-col items-center gap-1 py-3 text-xs font-semibold transition-all ${
+                        selectedGame === g.id
+                          ? "bg-[#E8FF00] text-black"
+                          : "bg-[#0D0D0D] text-neutral-500 hover:bg-neutral-900 hover:text-white"
+                      }`}
+                    >
+                      <span className="text-base">{g.icon}</span>
+                      <span>{g.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Model 1 */}
             <div className="flex flex-col gap-2">
-              <label className="text-xs text-slate-400 uppercase tracking-widest">Game</label>
-              <div className="flex gap-2">
-                {AVAILABLE_GAMES.map(g => (
-                  <button
-                    key={g.id}
-                    onClick={() => setSelectedGame(g.id)}
-                    className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-md border text-sm font-semibold transition-all ${selectedGame === g.id ? "border-white bg-white text-slate-950" : "border-slate-700 text-slate-400 hover:border-slate-500"}`}
-                  >
-                    {g.icon} {g.label}
-                  </button>
+              <label className="text-[10px] text-neutral-600 uppercase tracking-widest">Model 1</label>
+              <select
+                value={model1}
+                onChange={e => setModel1(e.target.value)}
+                className="bg-neutral-900 border border-neutral-800 px-3 py-2.5 text-sm text-white focus:outline-none focus:border-neutral-600 appearance-none"
+              >
+                {AVAILABLE_MODELS.map(m => (
+                  <option key={m.id} value={m.id}>{m.label} — {m.provider}</option>
                 ))}
-              </div>
+              </select>
             </div>
-          )}
 
-          {/* Show selected game label when preselected from landing page */}
-          {gamePreselected && (
-            <div className="flex items-center gap-3 pb-2 border-b border-slate-800">
-              <span className="text-2xl">{selectedGameInfo?.icon}</span>
-              <div>
-                <div className="text-white font-semibold">{selectedGameInfo?.label}</div>
-                <div className="text-xs text-slate-500">Select your models and start</div>
-              </div>
+            {/* VS */}
+            <div className="flex items-center gap-3">
+              <div className="flex-1 h-px bg-neutral-800" />
+              <span className="text-[10px] text-neutral-700 font-bold tracking-widest">VS</span>
+              <div className="flex-1 h-px bg-neutral-800" />
             </div>
-          )}
 
-          {/* Model 1 */}
-          <div className="flex flex-col gap-2">
-            <label className="text-xs text-slate-400 uppercase tracking-widest">Model 1</label>
-            <select
-              value={model1}
-              onChange={e => setModel1(e.target.value)}
-              className="bg-slate-800 border border-slate-700 rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-slate-500"
-            >
-              {AVAILABLE_MODELS.map(m => (
-                <option key={m.id} value={m.id}>{m.label} — {m.provider}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* VS divider */}
-          <div className="flex items-center gap-3">
-            <div className="flex-1 h-px bg-slate-800" />
-            <span className="text-xs text-slate-500 font-bold tracking-widest">VS</span>
-            <div className="flex-1 h-px bg-slate-800" />
-          </div>
-
-          {/* Model 2 */}
-          <div className="flex flex-col gap-2">
-            <label className="text-xs text-slate-400 uppercase tracking-widest">Model 2</label>
-            <select
-              value={model2}
-              onChange={e => setModel2(e.target.value)}
-              className="bg-slate-800 border border-slate-700 rounded-md px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-slate-500"
-            >
-              {AVAILABLE_MODELS.map(m => (
-                <option key={m.id} value={m.id}>{m.label} — {m.provider}</option>
-              ))}
-            </select>
-          </div>
-
-          {/* Secret word — only for Wordle */}
-          {selectedGame === "wordle" && (
+            {/* Model 2 */}
             <div className="flex flex-col gap-2">
-              <label className="text-xs text-slate-400 uppercase tracking-widest">
-                Secret Word <span className="normal-case text-slate-600">(leave blank for random)</span>
-              </label>
-              <input
-                value={word}
-                onChange={e => setWord(e.target.value.toUpperCase())}
-                maxLength={5}
-                placeholder="e.g. CRANE"
-                className="bg-slate-800 border border-slate-700 rounded-md px-3 py-2 text-sm text-white font-mono tracking-widest placeholder:text-slate-600 focus:outline-none focus:ring-1 focus:ring-slate-500"
-              />
+              <label className="text-[10px] text-neutral-600 uppercase tracking-widest">Model 2</label>
+              <select
+                value={model2}
+                onChange={e => setModel2(e.target.value)}
+                className="bg-neutral-900 border border-neutral-800 px-3 py-2.5 text-sm text-white focus:outline-none focus:border-neutral-600 appearance-none"
+              >
+                {AVAILABLE_MODELS.map(m => (
+                  <option key={m.id} value={m.id}>{m.label} — {m.provider}</option>
+                ))}
+              </select>
             </div>
-          )}
 
-          {error && <p className="text-red-400 text-xs">{error}</p>}
+            {/* Secret word */}
+            {selectedGame === "wordle" && (
+              <div className="flex flex-col gap-2">
+                <label className="text-[10px] text-neutral-600 uppercase tracking-widest">
+                  Secret Word <span className="normal-case text-neutral-700">(blank = random)</span>
+                </label>
+                <input
+                  value={word}
+                  onChange={e => setWord(e.target.value.toUpperCase())}
+                  maxLength={5}
+                  placeholder="e.g. CRANE"
+                  className="bg-neutral-900 border border-neutral-800 px-3 py-2.5 text-sm text-white font-mono tracking-widest placeholder:text-neutral-700 focus:outline-none focus:border-neutral-600"
+                />
+              </div>
+            )}
 
-          <Button
-            onClick={startMatch}
-            disabled={loading}
-            className="w-full bg-white text-slate-950 hover:bg-slate-200 font-semibold"
-          >
-            {loading ? "Starting..." : "Start Match →"}
-          </Button>
-        </Card>
+            {error && <p className="text-red-400 text-xs">{error}</p>}
+
+            <button
+              onClick={startMatch}
+              disabled={loading}
+              className="w-full bg-[#E8FF00] text-black py-3 text-sm font-bold tracking-wide hover:bg-yellow-200 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? "Starting..." : "Start Match →"}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -178,7 +196,7 @@ function ArenaContent() {
 
 export default function ArenaPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-slate-950" />}>
+    <Suspense fallback={<div className="min-h-screen bg-[#0D0D0D]" />}>
       <ArenaContent />
     </Suspense>
   )
