@@ -110,6 +110,7 @@ function DemoBoard({ offset = 0, onRoundChange }: { offset?: number; onRoundChan
 }
 
 export default function Home() {
+  const [secret, setSecret] = useState(DEMO_ROUNDS[0].secret)
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-[#F0F0F0] overflow-x-hidden" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
       <style>{`
@@ -155,7 +156,7 @@ export default function Home() {
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between mb-1">
               <span className="text-[10px] text-neutral-600 uppercase tracking-widest">Live demo</span>
-              <span className="text-[10px] text-neutral-600 font-mono">Live game</span>
+              <span className="text-[10px] text-neutral-600 font-mono">{secret}</span>
             </div>
             <div className="flex gap-6 items-start">
               <div className="flex flex-col gap-3">
@@ -163,7 +164,7 @@ export default function Home() {
                   <span className="w-1.5 h-1.5 rounded-full bg-violet-400" />
                   <span className="text-[11px] text-violet-400 font-medium">Llama 3.3</span>
                 </div>
-                <DemoBoard offset={0} />
+                <DemoBoard offset={0} onRoundChange={setSecret} />
               </div>
               <div className="flex flex-col items-center justify-center pt-12">
                 <span className="text-[10px] text-neutral-700 font-bold tracking-widest">VS</span>
