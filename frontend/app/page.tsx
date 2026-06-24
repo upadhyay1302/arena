@@ -61,19 +61,22 @@ const COMING_SOON = [
 
 
 
-function DemoBoard() {
-  const [guesses, setGuesses] = useState<typeof DEMO_SEQUENCE>([])
+function DemoBoard({ offset = 0 }: { offset?: number }) {
+  const [guesses, setGuesses] = useState<{ word: string; tiles: string[] }[]>([])
   const step = useRef(0)
+  const round = useRef(offset % DEMO_ROUNDS.length)
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (step.current < DEMO_SEQUENCE.length) {
-        setGuesses(prev => [...prev, DEMO_SEQUENCE[step.current]])
+      const current = DEMO_ROUNDS[round.current]
+      if (step.current < current.guesses.length) {
+        setGuesses(prev => [...prev, current.guesses[step.current]])
         step.current++
       } else {
         setTimeout(() => {
-          setGuesses([])
+          round.current = (round.current + 1) % DEMO_ROUNDS.length
           step.current = 0
+          setGuesses([])
         }, 2500)
       }
     }, 1400)
