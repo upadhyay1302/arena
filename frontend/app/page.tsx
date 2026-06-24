@@ -61,12 +61,13 @@ const COMING_SOON = [
 
 
 
-function DemoBoard({ offset = 0 }: { offset?: number }) {
+function DemoBoard({ offset = 0, onRoundChange }: { offset?: number; onRoundChange?: (secret: string) => void }) {
   const [guesses, setGuesses] = useState<{ word: string; tiles: string[] }[]>([])
   const step = useRef(0)
   const round = useRef(offset % DEMO_ROUNDS.length)
 
   useEffect(() => {
+    onRoundChange?.(DEMO_ROUNDS[round.current].secret)
     const interval = setInterval(() => {
       const current = DEMO_ROUNDS[round.current]
       if (step.current < current.guesses.length) {
@@ -77,6 +78,7 @@ function DemoBoard({ offset = 0 }: { offset?: number }) {
           round.current = (round.current + 1) % DEMO_ROUNDS.length
           step.current = 0
           setGuesses([])
+          onRoundChange?.(DEMO_ROUNDS[round.current].secret)
         }, 2500)
       }
     }, 1400)
