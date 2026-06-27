@@ -204,9 +204,26 @@ function MatchPageInner({ params }: { params: Promise<{ id: string }> }) {
 
                     <WordleBoard guesses={player.guesses} />
 
-                    <span className="text-[10px] text-neutral-700 tabular-nums">
-                      {player.guesses.length} / 6
-                    </span>
+                    <div className="flex items-center gap-3">
+                      <div className="flex gap-1">
+                        {Array.from({ length: 6 }, (_, i) => (
+                          <div
+                            key={i}
+                            className={cn(
+                              "w-4 h-1 transition-all duration-500",
+                              i < player.guesses.length
+                                ? player.won && i === player.guesses.length - 1
+                                  ? "bg-[#E8FF00]"
+                                  : "bg-neutral-500"
+                                : "bg-neutral-800"
+                            )}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-[10px] text-neutral-600 tabular-nums">
+                        {player.guesses.length}/6
+                      </span>
+                    </div>
                   </div>
                 )
               })}
