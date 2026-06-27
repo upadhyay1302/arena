@@ -137,16 +137,19 @@ function MatchPageInner({ params }: { params: Promise<{ id: string }> }) {
             : "bg-neutral-900 text-neutral-400 border-neutral-800"
         )}>
           {state.winner ? (
-            <>
-              🏆 {modelLabel(state.winner)} wins
-              {state.secret_word && (
-                <span className="font-normal ml-2 opacity-70">
-                  — the word was <span className="font-bold">{state.secret_word}</span>
-                </span>
-              )}
-            </>
+            <div className="flex items-center justify-center gap-6">
+              <span>🏆 {modelLabel(state.winner)} wins{state.secret_word && <span className="font-normal ml-2 opacity-70">— the word was <span className="font-bold">{state.secret_word}</span></span>}</span>
+              <button onClick={rematch} disabled={rematching} className="bg-black text-[#E8FF00] border border-black px-4 py-1 text-xs font-bold hover:bg-neutral-900 transition-colors disabled:opacity-50">
+                {rematching ? "Starting..." : "Rematch →"}
+              </button>
+            </div>
           ) : (
-            "Draw — neither model won"
+            <div className="flex items-center justify-center gap-6">
+              <span>Draw — neither model won</span>
+              <button onClick={rematch} disabled={rematching} className="bg-neutral-800 text-white border border-neutral-700 px-4 py-1 text-xs font-bold hover:bg-neutral-700 transition-colors disabled:opacity-50">
+                {rematching ? "Starting..." : "Rematch →"}
+              </button>
+            </div>
           )}
         </div>
       )}
