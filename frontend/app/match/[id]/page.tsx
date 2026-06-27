@@ -8,6 +8,8 @@ import { WordleBoard } from "@/components/wordle/WordleBoard"
 import { Connect4Board, C4Cell } from "@/components/connect4/Connect4Board"
 import { CodenamesBoard, Card } from "@/components/codenames/CodenamesBoard"
 import { cn } from "@/lib/utils"
+import { useRouter } from "next/navigation"
+import { BACKEND_URL } from "@/lib/config"
 
 function modelLabel(model: string) {
   if (model.includes("llama")) return "Llama"
@@ -51,6 +53,28 @@ function MatchPageInner({ params }: { params: Promise<{ id: string }> }) {
   const [cnPhase, setCnPhase] = useState<string>("")
   const [currentClue, setCurrentClue] = useState<{ word: string; number: number } | undefined>()
   const [lastGuessWord, setLastGuessWord] = useState<string | undefined>()
+
+  const router = useRouter()
+  const [rematching, setRematching] = useState(false)
+
+  const rematch = async () => {
+    setRematching(true)
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/match`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          game,
+          models: playerList,
+          secret_word: "",
+        }),
+      })
+      const data = await res.json()
+      router.push(`/match/${data.match_id}?game=${game}`)
+    } catch {
+      setRematching(false)
+    }
+  }
 
   const { connected, state } = useMatchSocket({
     matchId: id,
