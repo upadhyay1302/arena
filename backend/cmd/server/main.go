@@ -40,6 +40,7 @@ return m, ok
 var store = &matchStore{matches: make(map[string]*games.Match)}
 var hub = ws.NewHub()
 var eloStore *elo.Store
+var historyStore *elo.HistoryStore
 
 func main() {
 var err error
@@ -47,12 +48,17 @@ eloStore, err = elo.NewStore("ratings.json")
 if err != nil {
 log.Fatalf("failed to init elo store: %v", err)
 }
+historyStore, err = elo.NewHistoryStore("matches.json")
+if err != nil {
+log.Fatalf("failed to init history store: %v", err)
+}
 
 mux := http.NewServeMux()
 mux.HandleFunc("POST /api/match", handleCreateMatch)
 mux.HandleFunc("GET /api/match/{id}", handleGetMatch)
 mux.HandleFunc("GET /ws/match/{id}", handleWS)
 mux.HandleFunc("GET /api/leaderboard", handleLeaderboard)
+mux.HandleFunc("GET /api/matches", handleMatches)
 
 port := os.Getenv("PORT")
 if port == "" {
@@ -92,6 +98,13 @@ m.Run(context.Background(), body.SecretWord)
 if len(body.Models) >= 2 {
 log.Printf("recording result: %s vs %s, winner: %q", body.Models[0], body.Models[1], m.Winner)
 eloStore.RecordResult(body.Models[0], body.Models[1], m.Winner)
+historyStore.Add(elo.MatchRecord{
+ID:        m.ID,
+Game:      body.Game,
+Models:    body.Models,
+Winner:    m.Winner,
+Timestamp: m.ID,
+})
 }
 }()
 
