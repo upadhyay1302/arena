@@ -166,3 +166,9 @@ next.ServeHTTP(w, r)
 func generateID() string {
 return time.Now().Format("20060102150405.000000")
 }
+
+func handleMatches(w http.ResponseWriter, r *http.Request) {
+matches := historyStore.List(50)
+w.Header().Set("Content-Type", "application/json")
+json.NewEncoder(w).Encode(matches)
+}
