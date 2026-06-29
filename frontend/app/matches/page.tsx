@@ -103,10 +103,10 @@ export default function MatchesPage() {
         ) : (
           <div>
             <div className="grid grid-cols-12 gap-4 px-4 pb-3 text-[10px] text-neutral-700 uppercase tracking-widest border-b border-neutral-800 mb-1">
-              <div className="col-span-1">Game</div>
+              <div className="col-span-2">Game</div>
               <div className="col-span-4">Models</div>
               <div className="col-span-3">Winner</div>
-              <div className="col-span-3">Time</div>
+              <div className="col-span-2">Time</div>
               <div className="col-span-1"></div>
             </div>
 
@@ -115,7 +115,7 @@ export default function MatchesPage() {
                 key={m.id}
                 className="grid grid-cols-12 gap-4 items-center px-4 py-4 border-b border-neutral-900 hover:bg-neutral-900 transition-colors"
               >
-                <div className="col-span-1 flex flex-col items-start gap-0.5">
+                <div className="col-span-2 flex flex-col items-start gap-0.5">
                   <span className="text-lg">{gameIcon(m.game)}</span>
                   <span className="text-[10px] text-neutral-600 capitalize">{m.game === "connect4" ? "Connect 4" : m.game.charAt(0).toUpperCase() + m.game.slice(1)}</span>
                 </div>
@@ -138,7 +138,7 @@ export default function MatchesPage() {
                   )}
                 </div>
 
-                <div className="col-span-3 text-[10px] text-neutral-700 font-mono">
+                <div className="col-span-2 text-[10px] text-neutral-700 font-mono">
                   {formatTime(m.id)}
                 </div>
 
