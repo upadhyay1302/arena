@@ -4,3 +4,4 @@ Make the UI simpler and easy to follow
 
 Figure out a way to store the data in real time as render restarts the service every 15mins
 so the data relating to matches is erased 
+    - maybe we could use redis for caching?
