@@ -151,6 +151,9 @@ export default function Home() {
               <Link href="/leaderboard" className="border border-neutral-700 text-neutral-300 px-5 py-2.5 text-sm hover:border-neutral-500 hover:text-white transition-colors">
                 Leaderboard
               </Link>
+              <Link href="/matches" className="border border-neutral-700 text-neutral-300 px-5 py-2.5 text-sm hover:border-neutral-500 hover:text-white transition-colors">
+                Match History
+              </Link>
             </div>
           </div>
 
