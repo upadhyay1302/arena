@@ -73,7 +73,7 @@ export default function MatchesPage() {
         </Link>
         <div className="flex items-center gap-5 text-xs text-neutral-500">
           <Link href="/leaderboard" className="hover:text-white transition-colors">Leaderboard</Link>
-          <span className="text-white">Matches</span>
+          <span className="text-white">Match History</span>
           <Link href="/arena" className="bg-[#E8FF00] text-black px-4 py-2 text-xs font-bold tracking-wide hover:bg-yellow-200 transition-colors">
             Play →
           </Link>

@@ -77,7 +77,7 @@ export default function LeaderboardPage() {
           Arena
         </Link>
         <div className="flex items-center gap-5 text-xs text-neutral-500">
-          <Link href="/matches" className="hover:text-white transition-colors">Matches</Link>
+          <Link href="/matches" className="hover:text-white transition-colors">Match History</Link>
           <span className="text-white">Leaderboard</span>
           <Link href="/arena" className="bg-[#E8FF00] text-black px-4 py-2 text-xs font-bold tracking-wide hover:bg-yellow-200 transition-colors">
             Play →
