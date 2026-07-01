@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { BACKEND_URL } from "@/lib/config"
 import Link from "next/link"
+import { modelLabel, modelColor, modelDot } from "@/lib/models"
 
 interface ModelStats {
   model: string
@@ -13,24 +14,9 @@ interface ModelStats {
   games: number
 }
 
-function modelLabel(model: string) {
-  if (model.includes("llama")) return "Llama"
-  if (model.includes("qwen")) return "Qwen"
-  if (model.includes("gpt")) return "GPT"
-  if (model.includes("claude")) return "Claude"
-  if (model.includes("gemini")) return "Gemini"
-  if (model.includes("mixtral")) return "Mixtral"
-  return model
-}
 
-function modelColor(model: string) {
-  if (model.includes("llama")) return "text-violet-400"
-  if (model.includes("qwen")) return "text-sky-400"
-  if (model.includes("gpt")) return "text-emerald-400"
-  if (model.includes("claude")) return "text-orange-400"
-  if (model.includes("gemini")) return "text-blue-400"
-  return "text-neutral-400"
-}
+
+
 
 function RatingBar({ rating }: { rating: number }) {
   const pct = Math.min(100, ((rating - 800) / 400) * 100)

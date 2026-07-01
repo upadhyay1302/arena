@@ -3,6 +3,7 @@
 import { use, useState, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
+import { modelLabel, modelColor, modelDot } from "@/lib/models"
 import { useMatchSocket } from "@/hooks/useMatchSocket"
 import { WordleBoard } from "@/components/wordle/WordleBoard"
 import { Connect4Board, C4Cell } from "@/components/connect4/Connect4Board"
@@ -11,33 +12,11 @@ import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
 import { BACKEND_URL } from "@/lib/config"
 
-function modelLabel(model: string) {
-  if (model.includes("llama")) return "Llama"
-  if (model.includes("qwen")) return "Qwen"
-  if (model.includes("gpt")) return "GPT"
-  if (model.includes("claude")) return "Claude"
-  if (model.includes("gemini")) return "Gemini"
-  if (model.includes("mixtral")) return "Mixtral"
-  return model
-}
 
-function modelColor(model: string) {
-  if (model.includes("llama")) return "text-violet-400"
-  if (model.includes("qwen")) return "text-sky-400"
-  if (model.includes("gpt")) return "text-emerald-400"
-  if (model.includes("claude")) return "text-orange-400"
-  if (model.includes("gemini")) return "text-blue-400"
-  return "text-neutral-400"
-}
 
-function modelDot(model: string) {
-  if (model.includes("llama")) return "bg-violet-400"
-  if (model.includes("qwen")) return "bg-sky-400"
-  if (model.includes("gpt")) return "bg-emerald-400"
-  if (model.includes("claude")) return "bg-orange-400"
-  if (model.includes("gemini")) return "bg-blue-400"
-  return "bg-neutral-400"
-}
+
+
+
 
 const EMPTY_BOARD: C4Cell[][] = Array.from({ length: 6 }, () => Array(7).fill(0) as C4Cell[])
 

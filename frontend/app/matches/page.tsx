@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
+import { modelLabel, modelColor, modelDot } from "@/lib/models"
 import { BACKEND_URL } from "@/lib/config"
 
 interface MatchRecord {
@@ -21,14 +22,7 @@ function modelLabel(model: string) {
   return model
 }
 
-function modelColor(model: string) {
-  if (model.includes("llama")) return "text-violet-400"
-  if (model.includes("qwen")) return "text-sky-400"
-  if (model.includes("gpt")) return "text-emerald-400"
-  if (model.includes("claude")) return "text-orange-400"
-  if (model.includes("gemini")) return "text-blue-400"
-  return "text-neutral-400"
-}
+
 
 function gameIcon(game: string) {
   if (game === "wordle") return "⬛"
