@@ -13,14 +13,6 @@ interface MatchRecord {
   timestamp: string
 }
 
-function modelLabel(model: string) {
-  if (model.includes("llama")) return "Llama"
-  if (model.includes("qwen")) return "Qwen"
-  if (model.includes("gpt")) return "GPT"
-  if (model.includes("claude")) return "Claude"
-  if (model.includes("gemini")) return "Gemini"
-  return model
-}
 
 
 
