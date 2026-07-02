@@ -32,6 +32,7 @@ function MatchPageInner({ params }: { params: Promise<{ id: string }> }) {
   const [cnPhase, setCnPhase] = useState<string>("")
   const [currentClue, setCurrentClue] = useState<{ word: string; number: number } | undefined>()
   const [lastGuessWord, setLastGuessWord] = useState<string | undefined>()
+  const [coldStart, setColdStart] = useState(false)
 
   const router = useRouter()
   const [rematching, setRematching] = useState(false)
@@ -54,6 +55,12 @@ function MatchPageInner({ params }: { params: Promise<{ id: string }> }) {
       setRematching(false)
     }
   }
+
+  useEffect(() => {
+    const t = setTimeout(() => setColdStart(true), 8000)
+    if (connected) clearTimeout(t)
+    return () => clearTimeout(t)
+  }, [connected])
 
   const { connected, state } = useMatchSocket({
     matchId: id,
@@ -106,6 +113,12 @@ function MatchPageInner({ params }: { params: Promise<{ id: string }> }) {
           <span className="text-[10px] text-neutral-600">{connected ? "live" : "disconnected"}</span>
         </div>
       </nav>
+
+      {coldStart && !connected && (
+        <div className="px-6 py-3 border-b border-neutral-800 bg-neutral-950 text-xs text-neutral-500 text-center">
+          <span className="text-[#E8FF00]">⏳</span> Backend is waking up (Render free tier). Usually takes 20–30s — the match will start automatically.
+        </div>
+      )}
 
       {/* Winner banner */}
       {state.game_over && (
