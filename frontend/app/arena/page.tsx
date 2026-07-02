@@ -34,6 +34,7 @@ function ArenaContent() {
   const [word, setWord] = useState("")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
+  const [slowWarning, setSlowWarning] = useState(false)
 
   const randomWord = () => WORDS[Math.floor(Math.random() * WORDS.length)]
 
@@ -48,7 +49,9 @@ function ArenaContent() {
     }
 
     setLoading(true)
+    setSlowWarning(false)
     setError("")
+    const slowTimer = setTimeout(() => setSlowWarning(true), 4000)
     try {
       const res = await fetch(`${BACKEND_URL}/api/match`, {
         method: "POST",
@@ -60,8 +63,10 @@ function ArenaContent() {
         }),
       })
       const data = await res.json()
+      clearTimeout(slowTimer)
       router.push(`/match/${data.match_id}?game=${selectedGame}`)
     } catch (e) {
+      clearTimeout(slowTimer)
       setError("Failed to connect to backend")
       setLoading(false)
     }
@@ -179,6 +184,11 @@ function ArenaContent() {
             )}
 
             {error && <p className="text-red-400 text-xs">{error}</p>}
+            {slowWarning && !error && (
+              <div className="border border-neutral-800 bg-neutral-950 px-4 py-3 text-xs text-neutral-500">
+                <span className="text-[#E8FF00]">⏳</span> The backend is waking up — Render free tier spins down after inactivity. Usually takes 20–30 seconds. Hang tight.
+              </div>
+            )}
 
             <button
               onClick={startMatch}
