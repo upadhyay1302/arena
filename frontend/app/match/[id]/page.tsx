@@ -56,12 +56,6 @@ function MatchPageInner({ params }: { params: Promise<{ id: string }> }) {
     }
   }
 
-  useEffect(() => {
-    const t = setTimeout(() => setColdStart(true), 8000)
-    if (connected) clearTimeout(t)
-    return () => clearTimeout(t)
-  }, [connected])
-
   const { connected, state } = useMatchSocket({
     matchId: id,
     onEvent: (event) => {
@@ -92,6 +86,12 @@ function MatchPageInner({ params }: { params: Promise<{ id: string }> }) {
       }
     },
   })
+
+  useEffect(() => {
+    if (connected) return
+    const t = setTimeout(() => setColdStart(true), 8000)
+    return () => clearTimeout(t)
+  }, [connected])
 
   const playerList = models.length > 0 ? models : Object.keys(state.players)
 
