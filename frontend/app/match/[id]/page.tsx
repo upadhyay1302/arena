@@ -1,6 +1,6 @@
 "use client"
 
-import { use, useState, Suspense } from "react"
+import { use, useState, Suspense, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { modelLabel, modelColor, modelDot } from "@/lib/models"
