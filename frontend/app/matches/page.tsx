@@ -40,6 +40,7 @@ function formatTime(id: string) {
 export default function MatchesPage() {
   const [matches, setMatches] = useState<MatchRecord[]>([])
   const [loading, setLoading] = useState(true)
+  const [filter, setFilter] = useState<string>("all")
 
   useEffect(() => {
     fetch(`${BACKEND_URL}/api/matches`)
@@ -48,6 +49,8 @@ export default function MatchesPage() {
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [])
+
+  const filtered = filter === "all" ? matches : matches.filter(m => m.game === filter)
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white" style={{ fontFamily: "'Inter', system-ui, sans-serif" }}>
@@ -67,9 +70,31 @@ export default function MatchesPage() {
       </nav>
 
       <div className="max-w-3xl mx-auto px-6 py-16">
-        <div className="mb-10">
-          <div className="text-[10px] text-neutral-600 uppercase tracking-widest mb-3">History</div>
-          <h1 className="text-3xl font-black text-white tracking-tight">Match History</h1>
+        <div className="flex items-end justify-between mb-10">
+          <div>
+            <div className="text-[10px] text-neutral-600 uppercase tracking-widest mb-3">History</div>
+            <h1 className="text-3xl font-black text-white tracking-tight">Match History</h1>
+          </div>
+          <div className="flex gap-px bg-neutral-800">
+            {[
+              { id: "all", label: "All" },
+              { id: "wordle", label: "⬛ Wordle" },
+              { id: "connect4", label: "🔴 Connect 4" },
+              { id: "codenames", label: "🔍 Codenames" },
+            ].map(f => (
+              <button
+                key={f.id}
+                onClick={() => setFilter(f.id)}
+                className={`px-3 py-1.5 text-[11px] font-medium transition-colors ${
+                  filter === f.id
+                    ? "bg-[#E8FF00] text-black"
+                    : "bg-[#0D0D0D] text-neutral-500 hover:text-white"
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
         </div>
 
         {loading ? (
@@ -77,7 +102,7 @@ export default function MatchesPage() {
             <div className="w-3 h-3 border border-neutral-700 border-t-neutral-400 rounded-full animate-spin" />
             Loading...
           </div>
-        ) : matches.length === 0 ? (
+        ) : filtered.length === 0 ? (
           <div className="border border-neutral-800 p-12 text-center">
             <div className="text-3xl mb-4">🎮</div>
             <div className="text-neutral-400 text-sm mb-2">No matches played yet</div>
@@ -96,7 +121,7 @@ export default function MatchesPage() {
               <div className="col-span-1"></div>
             </div>
 
-            {matches.map((m) => (
+            {filtered.map((m) => (
               <div
                 key={m.id}
                 className="grid grid-cols-12 gap-4 items-center px-4 py-4 border-b border-neutral-900 hover:bg-neutral-900 transition-colors"
