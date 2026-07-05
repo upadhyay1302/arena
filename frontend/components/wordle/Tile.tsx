@@ -24,7 +24,7 @@ export function Tile({ letter, color = "empty", delay = 0 }: TileProps) {
   }, [letter, color, delay])
 
   return (
-    <div className="w-12 h-12 [perspective:300px]">
+    <div className="w-10 h-10 sm:w-12 sm:h-12 [perspective:300px]">
       <div
         className={cn(
           "relative w-full h-full transition-transform duration-500 [transform-style:preserve-3d]",
