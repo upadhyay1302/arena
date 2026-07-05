@@ -106,7 +106,7 @@ function MatchPageInner({ params }: { params: Promise<{ id: string }> }) {
             Arena
           </Link>
           <span className="text-neutral-700">·</span>
-          <span className="text-[10px] text-neutral-600 uppercase tracking-widest capitalize">{game}</span>
+          <span className="hidden sm:inline text-[10px] text-neutral-600 uppercase tracking-widest capitalize">{game}</span>
         </div>
         <div className="flex items-center gap-2">
           <div className={cn("w-1.5 h-1.5 rounded-full", connected ? "bg-[#E8FF00]" : "bg-neutral-700")} />
@@ -129,14 +129,14 @@ function MatchPageInner({ params }: { params: Promise<{ id: string }> }) {
             : "bg-neutral-900 text-neutral-400 border-neutral-800"
         )}>
           {state.winner ? (
-            <div className="flex items-center justify-center gap-6">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
               <span>🏆 {modelLabel(state.winner)} wins{state.secret_word && <span className="font-normal ml-2 opacity-70">— the word was <span className="font-bold">{state.secret_word}</span></span>}</span>
               <button onClick={rematch} disabled={rematching} className="bg-black text-[#E8FF00] border border-black px-4 py-1 text-xs font-bold hover:bg-neutral-900 transition-colors disabled:opacity-50">
                 {rematching ? "Starting..." : "Rematch →"}
               </button>
             </div>
           ) : (
-            <div className="flex items-center justify-center gap-6">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
               <span>Draw — neither model won</span>
               <button onClick={rematch} disabled={rematching} className="bg-neutral-800 text-white border border-neutral-700 px-4 py-1 text-xs font-bold hover:bg-neutral-700 transition-colors disabled:opacity-50">
                 {rematching ? "Starting..." : "Rematch →"}
@@ -155,7 +155,7 @@ function MatchPageInner({ params }: { params: Promise<{ id: string }> }) {
               <span className="text-xs">Waiting for match to start...</span>
             </div>
           ) : (
-            <div className="flex items-start gap-16">
+            <div className="flex flex-col lg:flex-row items-center lg:items-start gap-10 lg:gap-16">
               {playerList.map((model) => {
                 const player = state.players[model] ?? { guesses: [], won: false, done: false }
                 const isWinner = state.winner === model
@@ -227,7 +227,7 @@ function MatchPageInner({ params }: { params: Promise<{ id: string }> }) {
       {/* Connect 4 */}
       {game === "connect4" && (
         <div className="flex flex-col items-center gap-8 px-6 py-12">
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-3">
             {playerList.map((model, i) => (
               <div key={model} className={cn(
                 "flex items-center gap-2 px-4 py-2 border transition-all",
@@ -244,7 +244,7 @@ function MatchPageInner({ params }: { params: Promise<{ id: string }> }) {
             ))}
           </div>
 
-          <Connect4Board board={board} lastMove={lastMove} />
+          <div className="overflow-x-auto w-full flex justify-center"><Connect4Board board={board} lastMove={lastMove} /></div>
 
           <div className="flex gap-6 text-[11px] text-neutral-600">
             {playerList.map((model, i) => {
@@ -267,7 +267,7 @@ function MatchPageInner({ params }: { params: Promise<{ id: string }> }) {
       {/* Codenames */}
       {game === "codenames" && (
         <div className="flex flex-col items-center gap-6 px-6 py-12">
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-3">
             {playerList.map((model, i) => (
               <div key={model} className={cn(
                 "flex items-center gap-2 px-4 py-2 border transition-all",
@@ -294,7 +294,7 @@ function MatchPageInner({ params }: { params: Promise<{ id: string }> }) {
             </div>
           )}
 
-          <CodenamesBoard cards={cnCards} lastGuess={lastGuessWord} />
+          <div className="overflow-x-auto w-full flex justify-center"><CodenamesBoard cards={cnCards} lastGuess={lastGuessWord} /></div>
 
           <div className="flex gap-6 text-[11px] text-neutral-600">
             <div className="flex items-center gap-2">
