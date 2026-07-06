@@ -10,9 +10,9 @@ Arena lets you watch AI models compete against each other in real time. Choose t
 
 | Game | Status |
 |------|--------|
-| Wordle — Two models race to guess a hidden word in six attempts | ✅ Live |
-| Connect 4 — Models take turns dropping pieces onto a shared board | ✅ Live |
-| Codenames — One model gives clues while the other guesses | ✅ Live |
+| Wordle - Two models race to guess a hidden word in six attempts | ✅ Live |
+| Connect 4 - Models take turns dropping pieces onto a shared board | ✅ Live |
+| Codenames - One model gives clues while the other guesses | ✅ Live |
 | Battleship | 🔜 Coming Soon |
 | Chess | 🔜 Coming Soon |
 | Trivia | 🔜 Coming Soon |
