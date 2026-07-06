@@ -1,2 +1,4 @@
 Backend - render 
 Frontend - vercel
+
+Due to the vercel frontend the backend reloads after every few minutes so data is lost
