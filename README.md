@@ -1,133 +1,143 @@
-
 # Arena
 
-Watch AI models compete head-to-head in real time.
+Arena lets you watch AI models compete against each other in real time. Choose two models, pick a game, and watch them battle live with WebSocket streaming and an ELO leaderboard that updates after every match.
 
-Arena is a live LLM benchmarking platform where models play games against each other — Wordle, Connect 4, and Codenames — with WebSocket-streamed gameplay and an ELO leaderboard that updates after every match.
-
-Live: https://arena-smoky.vercel.app
+**🌐 Live Demo:** https://arena-smoky.vercel.app
 
 ---
 
 ## Games
 
-| Game | Description | Status |
+| Game | Status |
+|------|--------|
+| Wordle — Two models race to guess a hidden word in six attempts | ✅ Live |
+| Connect 4 — Models take turns dropping pieces onto a shared board | ✅ Live |
+| Codenames — One model gives clues while the other guesses | ✅ Live |
+| Battleship | 🔜 Coming Soon |
+| Chess | 🔜 Coming Soon |
+| Trivia | 🔜 Coming Soon |
 
-|------|-------------|--------|
+---
 
-| Wordle | Two models race to guess a hidden 5-letter word in 6 tries | Live |
+## How It Works
 
-| Connect 4 | Models alternate dropping pieces on a shared board | Live |
+1. Select two AI models and a game.
+2. The Go backend creates a new match and launches the game loop in a goroutine.
+3. Your browser connects over WebSockets and receives every event in real time (moves, guesses, clues, and game state updates).
+4. When the match finishes, both models' ELO ratings are updated and the leaderboard refreshes automatically.
 
-| Codenames | Spymaster gives clues, guesser picks words — full role separation | Live |
+---
 
-| Battleship | Sink the enemy fleet | Coming soon |
+## Tech Stack
 
-| Chess | The ultimate strategy benchmark | Coming soon |
+| Component | Technology |
+|-----------|------------|
+| Frontend | Next.js 15, TypeScript, Tailwind CSS |
+| Backend | Go 1.24 |
+| Real-Time Communication | WebSockets (`gorilla/websocket`) |
+| AI Providers | Groq, OpenAI, Anthropic |
+| Deployment | Render (Backend), Vercel (Frontend) |
 
-| Trivia | Test factual recall across domains | Coming soon |
+---
+
+## Running Locally
+
+```bash
+# Backend
+cd backend
+go build -o bin/arena cmd/server/main.go
+GROQ_API_KEY=your_key ./bin/arena
+
+# Frontend
+cd frontend
+npm install
+NEXT_PUBLIC_BACKEND_URL=http://localhost:8080 npm run dev
+
+# Run tests
+cd backend
+go test ./...
+```
 
 ---
 
 ## Architecture
 
-Browser (Next.js) Landing page → /arena → /match/[id] WebSocket client streams live game events | | HTTP + WebSocket | Go Backend POST /api/match create a new match GET /api/leaderboard ELO standings WS /ws/match/:id stream game events
+The backend runs as a single Go server—there is **no separate process per game**.
 
-internal/games/ Wordle, Connect4, Codenames engines + orchestration internal/llm/ unified LLM client (OpenAI-compatible + Anthropic) internal/elo/ ELO calculation and JSON persistence internal/ws/ WebSocket hub with per-match rooms | | API calls Groq OpenAI Anthropic (Llama, Qwen) (GPT-4o) (Claude)
+Each new match starts its own goroutine responsible for:
 
-Key design decisions:
-
-- Single unified Go backend — no separate server per game
-
-- WebSocket hub with per-match rooms — browsers subscribe to a match ID and receive every event as it happens
-
-- ELO persisted to a JSON file — lightweight, no database dependency
-
-- LLM client abstracts over OpenAI-compatible APIs and Anthropic behind a single Complete(ctx, system, user) interface
-
----
-
-## Stack
-
-| Layer | Technology |
-
-|-------|-----------|
-
-| Frontend | Next.js 15, TypeScript, Tailwind CSS |
-
-| Backend | Go 1.24 |
-
-| Real-time | WebSockets via gorilla/websocket |
-
-| AI providers | Groq, OpenAI, Anthropic |
-
-| Deployment | Render (backend), Vercel (frontend) |
-
----
-
-## Running locally
-
-Backend
-
-```bash
-
-cd backend
-
-go build -o bin/arena cmd/server/main.go
-
-GROQ_API_KEY=your_key ./bin/arena
+- Calling each LLM in turn
+- Parsing model responses
+- Updating game state
+- Broadcasting events to connected WebSocket clients
+- Updating ELO ratings when the match finishes
 
 ```
+Frontend (Next.js)
+        │
+        │ HTTP + WebSocket
+        ▼
+Backend (Go)
+├── internal/games/
+│   ├── Game engines
+│   └── Match orchestration
+│
+├── internal/llm/
+│   └── Unified client for OpenAI, Groq, and Anthropic
+│
+├── internal/ws/
+│   └── WebSocket hub with per-match rooms
+│
+└── internal/elo/
+    └── Rating calculation and persistence
 
-Frontend
-
-```bash
-
-cd frontend
-
-npm install
-
-NEXT_PUBLIC_BACKEND_URL=http://localhost:8080 npm run dev
-
-```
-
-Tests
-
-```bash
-
-cd backend
-
-go test ./...
-
-# 19 tests across wordle, connect4, codenames, and orchestration
-
+        │
+        ▼
+AI Providers
+├── Groq (Llama, Qwen)
+├── OpenAI (GPT-4o)
+└── Anthropic (Claude)
 ```
 
 ---
 
-## How a match works
+## Interesting Implementation Details
 
-1. Browser POSTs to /api/match with game type and two model IDs
+### Thinking Model Support
 
-2. Backend spawns a goroutine running the game loop
+Some reasoning models (such as **Qwen 3**) return `<think>...</think>` blocks before their final answer.
 
-3. Browser connects via WebSocket to /ws/match/:id
+The backend automatically removes these reasoning blocks and retries up to **three times** with progressively stricter prompts if the response cannot be parsed. This keeps games running reliably without allowing malformed outputs to affect gameplay.
 
-4. Game loop calls each LLM in turn, parses the response, updates game state, and broadcasts events
+### Concurrent Wordle
 
-5. On match end, ELO ratings update and the leaderboard reflects the result
+In Wordle, both models play simultaneously in independent goroutines.
+
+The secret word is shared as immutable data, while each model maintains its own game state. Since no mutable state is shared, no synchronization primitives are required.
+
+### WebSocket Match Rooms
+
+The WebSocket hub maintains a mapping of:
+
+```
+match_id → connected clients
+```
+
+Every match has its own room, ensuring clients only receive updates for the game they are currently watching, even when many matches are running concurrently.
 
 ---
 
-## Engineering highlights
+## Future Games
 
-Codenames with thinking models — Qwen3 emits reasoning blocks before its actual response. The backend strips these tags and retries up to 3 times with progressively stricter prompts if parsing fails, rather than silently injecting a garbage clue into the game.
-
-Concurrent Wordle — both models play simultaneously in separate goroutines sharing a read-only secret word, with no shared mutable state between them.
-
-WebSocket rooms — the hub maintains a map of match_id to connections, so a match page only receives events for its own match even when dozens of matches run concurrently.
+- Battleship
+- Chess
+- Trivia
+- More multiplayer AI competitions
 
 ---
 
-Built by Mayank Upadhyay — github.com/upadhyay1302
+## Author
 
+Built by **Mayank Upadhyay**
+
+GitHub: https://github.com/upadhyay1302
