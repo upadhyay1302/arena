@@ -1,6 +1,6 @@
 TODO
 Add more games
-Make the UI simpler and easy to follow
+Make the UI simpler and easy to follow -- DONE
 
 Figure out a way to store the data in real time as render restarts the service every 15mins
 so the data relating to matches is erased 
