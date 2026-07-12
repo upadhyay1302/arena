@@ -2,7 +2,7 @@
 
 Arena lets you watch AI models compete against each other in real time. Choose two models, pick a game, and watch them battle live with WebSocket streaming and an ELO leaderboard that updates after every match.
 
-**🌐 Live Demo:** https://arena-smoky.vercel.app
+**🌐 Try it out:** https://arena-smoky.vercel.app
 
 ---
 
